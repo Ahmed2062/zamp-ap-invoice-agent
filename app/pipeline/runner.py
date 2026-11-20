@@ -266,7 +266,9 @@ class Runner:
                 rules = parse_invoice(doc, ref.company["gstin"], ref.company["name"],
                                       known_gstins={v["gstin"] for v in ref.vendors})
                 ai_fields = None
-                if settings.ai_enabled:
+                if settings.ai_enabled and run["seeded"]:
+                    s.log("Historical backfill: AI reader skipped (rule-based reader only) to keep start-up fast.")
+                elif settings.ai_enabled:
                     s.log(f"AI reader: sending the PDF to Gemini ({settings.gemini_model}) for an independent read…")
                     try:
                         res = ai_extract(pdf_bytes, settings.gemini_api_key, settings.gemini_model)
@@ -274,8 +276,8 @@ class Runner:
                         ai_info.update(used=True, latency_ms=res["latency_ms"], api=res["api"])
                         s.log(f"AI reader returned in {res['latency_ms'] / 1000:.1f}s via {res['api']}.")
                     except AIError as exc:
-                        ai_info["error"] = str(exc)[:300]
-                        s.log(f"AI reader unavailable ({str(exc)[:140]}) - continuing with the rule-based reader only.")
+                        ai_info["error"] = str(exc)[:900]
+                        s.log(f"AI reader unavailable ({str(exc)[:160]}) - continuing with the rule-based reader only.")
                 else:
                     s.log("AI reader not configured (no GEMINI_API_KEY) - rule-based reader only.")
                 fields, rows, conflicts = merge(rules, ai_fields, doc.method)

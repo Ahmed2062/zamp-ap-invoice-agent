@@ -15,7 +15,8 @@ import httpx
 from app.utils import gstin as G
 from app.utils.textnorm import norm_po_number, parse_date
 
-INTERACTIONS_URL = "https://generativelanguage.googleapis.com/v1/interactions"
+INTERACTIONS_URL = "https://generativelanguage.googleapis.com/v1beta/interactions"
+API_REVISION = "2026-05-20"
 LEGACY_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 NUM = {"type": ["number", "null"]}
@@ -73,7 +74,8 @@ def _extract_text(payload: dict) -> str | None:
     return None
 
 
-def _call_interactions(client: httpx.Client, key: str, model: str, pdf_b64: str) -> str:
+def _call_interactions(client: httpx.Client, key: str, model: str, pdf_b64: str, timeout: float) -> str:
+    # PDF ("document") input is only available on the v1beta Interactions API.
     body = {
         "model": model,
         "input": [{"type": "text", "text": PROMPT},
@@ -82,24 +84,25 @@ def _call_interactions(client: httpx.Client, key: str, model: str, pdf_b64: str)
         "generation_config": {"thinking_level": "low", "max_output_tokens": 4096},
         "store": False,
     }
-    r = client.post(INTERACTIONS_URL, headers={"x-goog-api-key": key}, json=body)
+    r = client.post(INTERACTIONS_URL, headers={"x-goog-api-key": key, "Api-Revision": API_REVISION}, json=body,
+                    timeout=timeout)
     if r.status_code >= 400:
-        raise AIError(f"Interactions API HTTP {r.status_code}: {r.text[:300]}")
+        raise AIError(f"Interactions API HTTP {r.status_code}: {r.text[:220]}")
     text = _extract_text(r.json())
     if not text:
         raise AIError("Interactions API returned no text output")
     return text
 
 
-def _call_legacy(client: httpx.Client, key: str, model: str, pdf_b64: str) -> str:
+def _call_legacy(client: httpx.Client, key: str, model: str, pdf_b64: str, timeout: float) -> str:
     body = {
         "contents": [{"role": "user", "parts": [{"text": PROMPT},
                                                 {"inline_data": {"mime_type": "application/pdf", "data": pdf_b64}}]}],
         "generationConfig": {"responseMimeType": "application/json", "responseJsonSchema": SCHEMA, "temperature": 0},
     }
-    r = client.post(LEGACY_URL.format(model=model), headers={"x-goog-api-key": key}, json=body)
+    r = client.post(LEGACY_URL.format(model=model), headers={"x-goog-api-key": key}, json=body, timeout=timeout)
     if r.status_code >= 400:
-        raise AIError(f"generateContent HTTP {r.status_code}: {r.text[:300]}")
+        raise AIError(f"generateContent HTTP {r.status_code}: {r.text[:220]}")
     text = _extract_text(r.json())
     if not text:
         raise AIError("generateContent returned no text output")
@@ -166,16 +169,23 @@ def normalise(raw: dict) -> dict:
     }
 
 
-def ai_extract(pdf_bytes: bytes, api_key: str, model: str, timeout: float = 60.0) -> dict:
-    """Returns {'fields': {...}, 'model': ..., 'api': ..., 'latency_ms': ...}; raises AIError on failure."""
+def ai_extract(pdf_bytes: bytes, api_key: str, model: str, budget_s: float = 40.0) -> dict:
+    """Returns {'fields': {...}, 'model': ..., 'api': ..., 'latency_ms': ...}; raises AIError on failure.
+
+    The whole call is bounded by `budget_s` so a slow or failing AI service never stalls a run.
+    """
     pdf_b64 = base64.b64encode(pdf_bytes).decode()
     t0 = time.perf_counter()
     errors = []
-    with httpx.Client(timeout=timeout) as client:
-        for api, fn in (("interactions v1", _call_interactions), ("generateContent v1beta", _call_legacy)):
+    with httpx.Client() as client:
+        for api, fn in (("interactions v1beta", _call_interactions), ("generateContent v1beta", _call_legacy)):
             for attempt in range(2):
+                left = budget_s - (time.perf_counter() - t0)
+                if left < 5:
+                    errors.append(f"{api}: skipped (time budget used up)")
+                    break
                 try:
-                    text = fn(client, api_key, model, pdf_b64)
+                    text = fn(client, api_key, model, pdf_b64, timeout=min(30.0, left))
                     try:
                         fields = normalise(_parse_json(text))
                     except (AttributeError, TypeError, ValueError, KeyError) as exc:
@@ -184,14 +194,14 @@ def ai_extract(pdf_bytes: bytes, api_key: str, model: str, timeout: float = 60.0
                             "latency_ms": round((time.perf_counter() - t0) * 1000)}
                 except AIError as exc:
                     msg = str(exc)
-                    errors.append(f"{api}: {msg}")
+                    errors.append(f"{api}: {msg[:220]}")
                     if " 401" in msg or " 403" in msg:
-                        raise AIError(f"Gemini rejected the API key ({msg[:120]})") from exc
+                        raise AIError(f"Gemini rejected the API key ({msg[:160]})") from exc
                     if (" 429" in msg or " 50" in msg) and attempt == 0:
                         time.sleep(2)
                         continue
                     break
                 except (httpx.HTTPError, json.JSONDecodeError) as exc:
-                    errors.append(f"{api}: {exc}")
+                    errors.append(f"{api}: {exc.__class__.__name__}: {str(exc)[:160]}")
                     break
-    raise AIError("; ".join(errors)[:500])
+    raise AIError(" | ".join(errors)[:900])

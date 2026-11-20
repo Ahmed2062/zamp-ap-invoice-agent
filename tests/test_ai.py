@@ -76,6 +76,7 @@ def test_interactions_api_request_and_parsing(monkeypatch):
     def handler(request):
         seen["url"] = str(request.url)
         seen["key"] = request.headers.get("x-goog-api-key")
+        seen["revision"] = request.headers.get("api-revision")
         body = json.loads(request.content)
         seen["types"] = [p["type"] for p in body["input"]]
         seen["schema"] = body["response_format"]["schema"]["type"]
@@ -84,7 +85,8 @@ def test_interactions_api_request_and_parsing(monkeypatch):
 
     _patch_client(monkeypatch, handler)
     res = ai_reader.ai_extract(b"%PDF-1.4 test", "test-key", "gemini-3.8-flash")
-    assert seen["url"].endswith("/v1/interactions") and seen["key"] == "test-key"
+    assert seen["url"].endswith("/v1beta/interactions") and seen["key"] == "test-key"
+    assert seen["revision"] == ai_reader.API_REVISION
     assert seen["types"] == ["text", "document"] and seen["schema"] == "object"
     f = res["fields"]
     assert f["total"] == 497665.0 and f["po_number"] == "4500001201" and f["bank"]["account_number"] == "50200034567812"
