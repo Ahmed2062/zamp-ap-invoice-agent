@@ -60,7 +60,7 @@ def load_settings() -> Settings:
         reference_dir=Path(_env("REFERENCE_DIR", str(ROOT / "data" / "reference"))),
         samples_dir=Path(_env("SAMPLES_DIR", str(ROOT / "samples"))),
         gemini_api_key=_env("GEMINI_API_KEY") or _env("GOOGLE_API_KEY"),
-        gemini_model=_env("GEMINI_MODEL", "gemini-3.8-flash"),
+        gemini_model=_env("GEMINI_MODEL", "gemini-3.5-flash-lite"),
         ai_mode=(_env("AI_MODE", "auto") or "auto").lower(),
         stage_delay_ms=int(_env("STAGE_DELAY_MS", "650")),
         max_upload_mb=int(_env("MAX_UPLOAD_MB", "10")),

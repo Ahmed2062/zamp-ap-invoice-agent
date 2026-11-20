@@ -12,7 +12,7 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
-        value: gemini-3.8-flash
+        value: gemini-3.5-flash-lite
       # Demo pacing so each stage is visible live in the UI (0 = full speed).
       - key: STAGE_DELAY_MS
         value: "650"

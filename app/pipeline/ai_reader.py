@@ -21,7 +21,7 @@ API_REVISION = "2026-05-20"
 LEGACY_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 # Free-tier models tried in order when the configured model is overloaded.
 FALLBACK_MODELS = [m.strip() for m in os.environ.get(
-    "GEMINI_FALLBACK_MODELS", "gemini-4-hydrogen,gemini-3.6-flash,gemini-3.5-flash-lite").split(",") if m.strip()]
+    "GEMINI_FALLBACK_MODELS", "gemini-3.1-flash-lite,gemini-2.5-flash-lite,gemini-3.8-flash,gemini-4-hydrogen").split(",") if m.strip()]
 
 NUM = {"type": ["number", "null"]}
 STR = {"type": ["string", "null"]}
@@ -196,7 +196,7 @@ def ai_extract(pdf_bytes: bytes, api_key: str, model: str, budget_s: float = 25.
                     errors.append("time budget used up")
                     raise AIError(" | ".join(errors)[:900])
                 try:
-                    text = fn(client, api_key, m, pdf_b64, timeout=min(20.0, left))
+                    text = fn(client, api_key, m, pdf_b64, timeout=min(9.0, left))
                     try:
                         fields = normalise(_parse_json(text))
                     except (AttributeError, TypeError, ValueError, KeyError) as exc:
