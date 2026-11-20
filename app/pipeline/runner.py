@@ -273,8 +273,10 @@ class Runner:
                     try:
                         res = ai_extract(pdf_bytes, settings.gemini_api_key, settings.gemini_model)
                         ai_fields = res["fields"]
-                        ai_info.update(used=True, latency_ms=res["latency_ms"], api=res["api"])
-                        s.log(f"AI reader returned in {res['latency_ms'] / 1000:.1f}s via {res['api']}.")
+                        ai_info.update(used=True, latency_ms=res["latency_ms"], api=res["api"], model=res["model"])
+                        if res["model"] != settings.gemini_model:
+                            s.log(f"{settings.gemini_model} was busy - fell back to {res['model']}.")
+                        s.log(f"AI reader ({res['model']}) returned in {res['latency_ms'] / 1000:.1f}s.")
                     except AIError as exc:
                         ai_info["error"] = str(exc)[:900]
                         s.log(f"AI reader unavailable ({str(exc)[:160]}) - continuing with the rule-based reader only.")

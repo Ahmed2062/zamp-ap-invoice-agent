@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 import time
 
 import httpx
@@ -18,6 +19,9 @@ from app.utils.textnorm import norm_po_number, parse_date
 INTERACTIONS_URL = "https://generativelanguage.googleapis.com/v1beta/interactions"
 API_REVISION = "2026-05-20"
 LEGACY_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+# Free-tier models tried in order when the configured model is overloaded.
+FALLBACK_MODELS = [m.strip() for m in os.environ.get(
+    "GEMINI_FALLBACK_MODELS", "gemini-4-hydrogen,gemini-3.6-flash,gemini-3.5-flash-lite").split(",") if m.strip()]
 
 NUM = {"type": ["number", "null"]}
 STR = {"type": ["string", "null"]}
@@ -169,39 +173,44 @@ def normalise(raw: dict) -> dict:
     }
 
 
-def ai_extract(pdf_bytes: bytes, api_key: str, model: str, budget_s: float = 40.0) -> dict:
+def _overloaded(msg: str) -> bool:
+    return any(s in msg for s in (" 503", " 429", " 500", "UNAVAILABLE", "high demand", "RESOURCE_EXHAUSTED"))
+
+
+def ai_extract(pdf_bytes: bytes, api_key: str, model: str, budget_s: float = 25.0,
+               fallback_models: list[str] | None = None) -> dict:
     """Returns {'fields': {...}, 'model': ..., 'api': ..., 'latency_ms': ...}; raises AIError on failure.
 
-    The whole call is bounded by `budget_s` so a slow or failing AI service never stalls a run.
+    If a model is overloaded (503/429) the next free-tier model is tried immediately. The whole call is bounded
+    by `budget_s`, so a slow or unavailable AI service never stalls a run.
     """
     pdf_b64 = base64.b64encode(pdf_bytes).decode()
     t0 = time.perf_counter()
     errors = []
+    models = [model] + [m for m in (fallback_models if fallback_models is not None else FALLBACK_MODELS) if m != model]
     with httpx.Client() as client:
-        for api, fn in (("interactions v1beta", _call_interactions), ("generateContent v1beta", _call_legacy)):
-            for attempt in range(2):
+        for m in models:
+            for api, fn in (("interactions v1beta", _call_interactions), ("generateContent v1beta", _call_legacy)):
                 left = budget_s - (time.perf_counter() - t0)
-                if left < 5:
-                    errors.append(f"{api}: skipped (time budget used up)")
-                    break
+                if left < 4:
+                    errors.append("time budget used up")
+                    raise AIError(" | ".join(errors)[:900])
                 try:
-                    text = fn(client, api_key, model, pdf_b64, timeout=min(30.0, left))
+                    text = fn(client, api_key, m, pdf_b64, timeout=min(20.0, left))
                     try:
                         fields = normalise(_parse_json(text))
                     except (AttributeError, TypeError, ValueError, KeyError) as exc:
                         raise AIError(f"AI output did not match the expected schema ({exc})") from exc
-                    return {"fields": fields, "model": model, "api": api,
-                            "latency_ms": round((time.perf_counter() - t0) * 1000)}
+                    return {"fields": fields, "model": m, "api": api,
+                            "latency_ms": round((time.perf_counter() - t0) * 1000), "attempts": errors}
                 except AIError as exc:
                     msg = str(exc)
-                    errors.append(f"{api}: {msg[:220]}")
+                    errors.append(f"{m} / {api}: {msg[:200]}")
                     if " 401" in msg or " 403" in msg:
                         raise AIError(f"Gemini rejected the API key ({msg[:160]})") from exc
-                    if (" 429" in msg or " 50" in msg) and attempt == 0:
-                        time.sleep(2)
-                        continue
-                    break
+                    if _overloaded(msg):
+                        break  # same capacity pool on the other endpoint - move to the next model
                 except (httpx.HTTPError, json.JSONDecodeError) as exc:
-                    errors.append(f"{api}: {exc.__class__.__name__}: {str(exc)[:160]}")
+                    errors.append(f"{m} / {api}: {exc.__class__.__name__}: {str(exc)[:160]}")
                     break
     raise AIError(" | ".join(errors)[:900])

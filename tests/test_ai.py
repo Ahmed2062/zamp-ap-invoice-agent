@@ -115,3 +115,21 @@ def test_bad_key_is_reported_not_retried(monkeypatch):
     with pytest.raises(ai_reader.AIError, match="rejected the API key"):
         ai_reader.ai_extract(b"%PDF-1.4", "bad", "m")
     assert len(calls) == 1
+
+
+def test_overloaded_model_falls_back_to_next_model(monkeypatch):
+    calls = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        model = body.get("model") or request.url.path.split("/models/")[-1].split(":")[0]
+        calls.append((model, request.url.path.rsplit("/", 1)[-1]))
+        if model == "busy-model":
+            return httpx.Response(503, json={"error": {"message": "busy-model is currently experiencing high demand"}})
+        return httpx.Response(200, json={"steps": [{"type": "model_output",
+                                                    "content": [{"type": "text", "text": json.dumps(AI_JSON)}]}]})
+
+    _patch_client(monkeypatch, handler)
+    res = ai_reader.ai_extract(b"%PDF-1.4", "k", "busy-model", fallback_models=["spare-model"])
+    assert res["model"] == "spare-model" and res["fields"]["total"] == 497665.0
+    assert calls == [("busy-model", "interactions"), ("spare-model", "interactions")]
