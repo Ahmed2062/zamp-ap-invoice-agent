@@ -11,7 +11,7 @@ A working accounts-payable process for **PS-1 (Invoice processing: from PDF to d
 
 Every stage runs live in the UI. A dashboard tracks history, outcomes, exception reasons, and human decisions across runs.
 
-> **Live demo:** _add your Render URL here_ · **Demo video:** _add your Loom link here_
+> **Live demo:** https://ap-invoice-agent-bthu.onrender.com (free hosting: the first load after idle takes ~1 minute) · **Demo video:** _Loom link to be added_
 
 ---
 
