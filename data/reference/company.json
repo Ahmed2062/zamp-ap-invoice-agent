@@ -1,0 +1,13 @@
+{
+  "name": "Nimbus Retail Pvt. Ltd.",
+  "short_name": "Nimbus Retail",
+  "gstin": "29AABCN5432M1Z5",
+  "state_code": "29",
+  "state": "Karnataka",
+  "address": [
+    "4th Floor, Prestige Meridian II",
+    "29 MG Road, Bengaluru, Karnataka 560001"
+  ],
+  "ap_email": "ap@nimbusretail.in",
+  "currency": "INR"
+}

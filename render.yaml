@@ -1,0 +1,21 @@
+# Render Blueprint: one free Docker web service.
+# Deploy: Render Dashboard → New → Blueprint → select this repo.
+services:
+  - type: web
+    name: ap-invoice-agent
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      # Optional - enables the Gemini AI reader. Leave blank to run with rules + OCR only.
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
+      # Demo pacing so each stage is visible live in the UI (0 = full speed).
+      - key: STAGE_DELAY_MS
+        value: "650"
+      # Protects "Reset demo data" on the public URL. Render generates it; find it under Environment.
+      - key: ADMIN_TOKEN
+        generateValue: true

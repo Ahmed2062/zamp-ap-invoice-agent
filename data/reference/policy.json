@@ -1,0 +1,23 @@
+{
+  "version": "AOP v1.4",
+  "name": "Nimbus Retail - Accounts Payable invoice policy",
+  "currency": "INR",
+  "price_tolerance_pct": 2.0,
+  "amount_tolerance_abs": 5000.0,
+  "po_overbilling_tolerance_pct": 2.0,
+  "rounding_tolerance": 1.0,
+  "auto_approve_limit": 1000000.0,
+  "po_inference_min_score": 0.8,
+  "po_inference_min_margin": 0.15,
+  "fuzzy_duplicate_window_days": 7,
+  "invoice_max_age_days": 180,
+  "ocr_min_confidence": 70.0,
+  "standard_gst_rates": [
+    0,
+    5,
+    12,
+    18,
+    28
+  ],
+  "goods_require_grn": true
+}

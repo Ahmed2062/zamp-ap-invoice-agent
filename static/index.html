@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AP Invoice Agent · Invoice → Decision</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234f46e5'/><path d='M9 17l5 5 9-11' stroke='white' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+  <link rel="stylesheet" href="/static/app.css?v=3">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#/new">
+      <span class="brand-mark"><svg viewBox="0 0 32 32"><path d="M9 17l5 5 9-11" stroke="white" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span><b>AP Invoice Agent</b><small>Invoice → Decision</small></span>
+    </a>
+    <nav>
+      <a href="#/new" data-nav="new"><i data-icon="upload"></i>Process invoice</a>
+      <a href="#/dashboard" data-nav="dashboard"><i data-icon="chart"></i>Dashboard</a>
+      <a href="#/queue" data-nav="queue"><i data-icon="inbox"></i>Review queue <span class="nav-badge" id="queue-count" hidden></span></a>
+      <a href="#/reference" data-nav="reference"><i data-icon="db"></i>Reference data</a>
+      <a href="#/about" data-nav="about"><i data-icon="map"></i>How it works</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="org"><span class="org-dot"></span><span id="org-name">Nimbus Retail Pvt. Ltd.</span></div>
+      <div class="pill-row" id="engine-pills"></div>
+      <button class="btn-ghost small" id="reset-btn" title="Restore the demo history (7 past invoices) and clear new runs">Reset demo data</button>
+    </div>
+  </aside>
+  <main id="app" tabindex="-1"></main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js?v=3"></script>
+</body>
+</html>

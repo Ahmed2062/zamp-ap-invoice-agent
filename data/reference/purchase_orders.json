@@ -1,0 +1,335 @@
+[
+  {
+    "po_number": "4500001150",
+    "vendor_id": "V-1004",
+    "po_date": "2026-10-01",
+    "type": "services",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "IT-INFRA",
+    "requester": "Kiran Rao (IT)",
+    "buyer": "Priya Menon",
+    "note": "Blanket PO Oct 2026 - Mar 2027, billed monthly.",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "Managed Cloud Operations (monthly)",
+        "hsn_sac": "998316",
+        "qty": 6,
+        "uom": "Month",
+        "unit_price": 185000.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "24x7 NOC Monitoring Add-on (monthly)",
+        "hsn_sac": "998316",
+        "qty": 6,
+        "uom": "Month",
+        "unit_price": 25000.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 1260000.0
+  },
+  {
+    "po_number": "4500001163",
+    "vendor_id": "V-1007",
+    "po_date": "2026-09-15",
+    "type": "goods",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "STORE-OPS",
+    "requester": "Arjun Shetty (Stores)",
+    "buyer": "Priya Menon",
+    "note": "",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "LED Panel Light 2x2 ft 36W",
+        "hsn_sac": "94054090",
+        "qty": 40,
+        "uom": "Nos",
+        "unit_price": 1450.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "Copper Wire 2.5 sq mm (90 m coil)",
+        "hsn_sac": "85444999",
+        "qty": 10,
+        "uom": "Coil",
+        "unit_price": 2350.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 81500.0
+  },
+  {
+    "po_number": "4500001176",
+    "vendor_id": "V-1005",
+    "po_date": "2026-10-01",
+    "type": "services",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "STORE-OPS",
+    "requester": "Arjun Shetty (Stores)",
+    "buyer": "Priya Menon",
+    "note": "Blanket PO Oct 2026 - Mar 2027, billed monthly.",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "Housekeeping services - Store BLR-01 Indiranagar (monthly)",
+        "hsn_sac": "998533",
+        "qty": 6,
+        "uom": "Month",
+        "unit_price": 48000.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "Housekeeping services - Store BLR-02 Whitefield (monthly)",
+        "hsn_sac": "998533",
+        "qty": 6,
+        "uom": "Month",
+        "unit_price": 52000.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 3,
+        "description": "Housekeeping consumables (monthly)",
+        "hsn_sac": "998533",
+        "qty": 6,
+        "uom": "Month",
+        "unit_price": 9500.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 657000.0
+  },
+  {
+    "po_number": "4500001187",
+    "vendor_id": "V-1002",
+    "po_date": "2026-10-20",
+    "type": "goods",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "WAREHOUSE",
+    "requester": "Meera Iyer (Warehouse)",
+    "buyer": "Rahul Verma",
+    "note": "Partial deliveries allowed; vendor may invoice per delivery.",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "5-Ply Corrugated Box 18x12x12 in",
+        "hsn_sac": "48191010",
+        "qty": 20000,
+        "uom": "Nos",
+        "unit_price": 38.5,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "BOPP Packaging Tape 48mm x 65m Brown",
+        "hsn_sac": "39191000",
+        "qty": 2000,
+        "uom": "Nos",
+        "unit_price": 42.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 854000.0
+  },
+  {
+    "po_number": "4500001188",
+    "vendor_id": "V-1001",
+    "po_date": "2026-10-24",
+    "type": "goods",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "IT-INFRA",
+    "requester": "Kiran Rao (IT)",
+    "buyer": "Rahul Verma",
+    "note": "",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "HP LaserJet Pro MFP 4104fdw Printer",
+        "hsn_sac": "84433100",
+        "qty": 4,
+        "uom": "Nos",
+        "unit_price": 32400.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "HP 151A Black Toner Cartridge",
+        "hsn_sac": "84439959",
+        "qty": 12,
+        "uom": "Nos",
+        "unit_price": 6150.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 203400.0
+  },
+  {
+    "po_number": "4500001196",
+    "vendor_id": "V-1003",
+    "po_date": "2026-11-02",
+    "type": "goods",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "ADMIN",
+    "requester": "Neha Gupta (Admin)",
+    "buyer": "Rahul Verma",
+    "note": "",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "Whiteboard Marker Assorted (Pack of 10)",
+        "hsn_sac": "96082000",
+        "qty": 30,
+        "uom": "Pack",
+        "unit_price": 180.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "Sticky Notes 3x3 in (Pack of 5)",
+        "hsn_sac": "48201090",
+        "qty": 40,
+        "uom": "Pack",
+        "unit_price": 110.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 3,
+        "description": "Stapler HD-45",
+        "hsn_sac": "84721000",
+        "qty": 10,
+        "uom": "Nos",
+        "unit_price": 260.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 12400.0
+  },
+  {
+    "po_number": "4500001201",
+    "vendor_id": "V-1001",
+    "po_date": "2026-11-05",
+    "type": "goods",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "IT-INFRA",
+    "requester": "Kiran Rao (IT)",
+    "buyer": "Rahul Verma",
+    "note": "",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "Dell Latitude 5450 Laptop (Core Ultra 5, 16GB, 512GB SSD)",
+        "hsn_sac": "84713010",
+        "qty": 5,
+        "uom": "Nos",
+        "unit_price": 68500.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "Dell 24 Monitor P2425H",
+        "hsn_sac": "85285200",
+        "qty": 5,
+        "uom": "Nos",
+        "unit_price": 14200.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 3,
+        "description": "Logitech MK295 Wireless Keyboard & Mouse Combo",
+        "hsn_sac": "84716060",
+        "qty": 5,
+        "uom": "Nos",
+        "unit_price": 1650.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 421750.0
+  },
+  {
+    "po_number": "4500001209",
+    "vendor_id": "V-1006",
+    "po_date": "2026-11-01",
+    "type": "services",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "LOGISTICS",
+    "requester": "Meera Iyer (Warehouse)",
+    "buyer": "Priya Menon",
+    "note": "",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "FTL Freight Bengaluru to Chennai (32 ft MXL)",
+        "hsn_sac": "996511",
+        "qty": 10,
+        "uom": "Trip",
+        "unit_price": 28000.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "Loading & Unloading Charges",
+        "hsn_sac": "996719",
+        "qty": 10,
+        "uom": "Trip",
+        "unit_price": 1500.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 295000.0
+  },
+  {
+    "po_number": "4500001215",
+    "vendor_id": "V-1003",
+    "po_date": "2026-11-10",
+    "type": "goods",
+    "status": "open",
+    "currency": "INR",
+    "cost_center": "ADMIN",
+    "requester": "Neha Gupta (Admin)",
+    "buyer": "Rahul Verma",
+    "note": "",
+    "lines": [
+      {
+        "line_no": 1,
+        "description": "A4 Copier Paper 75 GSM (Ream of 500)",
+        "hsn_sac": "48025690",
+        "qty": 100,
+        "uom": "Ream",
+        "unit_price": 265.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 2,
+        "description": "Ball Pen Blue (Box of 50)",
+        "hsn_sac": "96081019",
+        "qty": 20,
+        "uom": "Box",
+        "unit_price": 225.0,
+        "tax_rate": 18
+      },
+      {
+        "line_no": 3,
+        "description": "Box File FC Size",
+        "hsn_sac": "48203000",
+        "qty": 50,
+        "uom": "Nos",
+        "unit_price": 95.0,
+        "tax_rate": 18
+      }
+    ],
+    "value_ex_tax": 35750.0
+  }
+]

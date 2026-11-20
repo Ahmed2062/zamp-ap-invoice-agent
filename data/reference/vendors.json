@@ -1,0 +1,168 @@
+[
+  {
+    "vendor_id": "V-1001",
+    "name": "Techsupply Solutions Pvt. Ltd.",
+    "aliases": [
+      "Techsupply Solutions",
+      "TechSupply"
+    ],
+    "gstin": "29AACCT4178K1ZT",
+    "state_code": "29",
+    "state": "Karnataka",
+    "address": "No. 14, 3rd Cross, Koramangala 5th Block, Bengaluru 560095",
+    "category": "IT Hardware",
+    "status": "approved",
+    "payment_terms_days": 30,
+    "email": "accounts@techsupply.co.in",
+    "phone": "+91 80 4123 7788",
+    "bank": {
+      "bank_name": "HDFC Bank",
+      "branch": "Koramangala",
+      "account_name": "Techsupply Solutions Pvt Ltd",
+      "account_number": "50200034567812",
+      "ifsc": "HDFC0000523"
+    }
+  },
+  {
+    "vendor_id": "V-1002",
+    "name": "Shree Ganesh Packaging Industries",
+    "aliases": [
+      "Shree Ganesh Packaging",
+      "SG Packaging"
+    ],
+    "gstin": "27ABKFS7721Q1ZB",
+    "state_code": "27",
+    "state": "Maharashtra",
+    "address": "Plot B-42, MIDC Bhosari, Pune, Maharashtra 411026",
+    "category": "Packaging",
+    "status": "approved",
+    "payment_terms_days": 45,
+    "email": "billing@sgpackaging.in",
+    "phone": "+91 20 2712 5566",
+    "bank": {
+      "bank_name": "State Bank of India",
+      "branch": "Bhosari",
+      "account_name": "Shree Ganesh Packaging Industries",
+      "account_number": "38291045672",
+      "ifsc": "SBIN0011392"
+    }
+  },
+  {
+    "vendor_id": "V-1003",
+    "name": "Annapurna Office Supplies",
+    "aliases": [
+      "Annapurna Stationers"
+    ],
+    "gstin": "29BQRPA6634L1Z9",
+    "state_code": "29",
+    "state": "Karnataka",
+    "address": "22, 9th Main Road, Jayanagar 4th Block, Bengaluru 560011",
+    "category": "Office Supplies",
+    "status": "approved",
+    "payment_terms_days": 15,
+    "email": "annapurna.supplies@gmail.com",
+    "phone": "+91 98450 12345",
+    "bank": {
+      "bank_name": "Canara Bank",
+      "branch": "Jayanagar",
+      "account_name": "Annapurna Office Supplies",
+      "account_number": "0412101009876",
+      "ifsc": "CNRB0000412"
+    }
+  },
+  {
+    "vendor_id": "V-1004",
+    "name": "Vertex CloudWorks Pvt. Ltd.",
+    "aliases": [
+      "Vertex CloudWorks",
+      "Vertex Cloud Works"
+    ],
+    "gstin": "36AAFCV2290H1Z7",
+    "state_code": "36",
+    "state": "Telangana",
+    "address": "Level 7, Cyber Pearl, HITEC City, Hyderabad, Telangana 500081",
+    "category": "IT Services",
+    "status": "approved",
+    "payment_terms_days": 30,
+    "email": "finance@vertexcloudworks.com",
+    "phone": "+91 40 6612 4400",
+    "bank": {
+      "bank_name": "Kotak Mahindra Bank",
+      "branch": "HITEC City",
+      "account_name": "Vertex CloudWorks Pvt Ltd",
+      "account_number": "9412345678",
+      "ifsc": "KKBK0007461"
+    }
+  },
+  {
+    "vendor_id": "V-1005",
+    "name": "Metro Facility Services LLP",
+    "aliases": [
+      "Metro Facility Services",
+      "Metro FMS"
+    ],
+    "gstin": "29AAQFM8812D1ZY",
+    "state_code": "29",
+    "state": "Karnataka",
+    "address": "88, 2nd Floor, 100 Feet Road, Indiranagar, Bengaluru 560038",
+    "category": "Facility Management",
+    "status": "approved",
+    "payment_terms_days": 30,
+    "email": "accounts@metrofms.in",
+    "phone": "+91 80 4092 1100",
+    "bank": {
+      "bank_name": "ICICI Bank",
+      "branch": "Indiranagar",
+      "account_name": "Metro Facility Services LLP",
+      "account_number": "002405501234",
+      "ifsc": "ICIC0000024"
+    }
+  },
+  {
+    "vendor_id": "V-1006",
+    "name": "Swift Freight Carriers",
+    "aliases": [
+      "Swift Freight"
+    ],
+    "gstin": "33AAJFS5567R1ZB",
+    "state_code": "33",
+    "state": "Tamil Nadu",
+    "address": "45, GST Road, Guindy, Chennai, Tamil Nadu 600032",
+    "category": "Logistics",
+    "status": "approved",
+    "payment_terms_days": 30,
+    "email": "bills@swiftfreight.in",
+    "phone": "+91 44 2250 7788",
+    "bank": {
+      "bank_name": "Indian Bank",
+      "branch": "Guindy",
+      "account_name": "Swift Freight Carriers",
+      "account_number": "6045123987",
+      "ifsc": "IDIB000G012"
+    }
+  },
+  {
+    "vendor_id": "V-1007",
+    "name": "Prakash Electricals",
+    "aliases": [
+      "Prakash Electrical Traders"
+    ],
+    "gstin": "29ACZPP4410N1ZQ",
+    "state_code": "29",
+    "state": "Karnataka",
+    "address": "17, SP Road, Bengaluru 560002",
+    "category": "Electricals",
+    "status": "blocked",
+    "payment_terms_days": 30,
+    "block_reason": "GST registration cancelled w.e.f. 30-Sep-2026; vendor blocked by Procurement on 02-Oct-2026.",
+    "email": "prakashelectricals@yahoo.co.in",
+    "phone": "+91 80 2222 3344",
+    "bank": {
+      "bank_name": "Bank of Baroda",
+      "branch": "SP Road",
+      "account_name": "Prakash Electricals",
+      "account_number": "31250100004567",
+      "ifsc": "BARB0SPROAD"
+    }
+  }
+]
