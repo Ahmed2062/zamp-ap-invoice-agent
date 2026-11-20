@@ -17,7 +17,7 @@ from app.pipeline.decision import LABELS, approval_gate, decide
 from app.pipeline.merge import CRITICAL as MERGE_CRITICAL
 from app.pipeline.merge import merge
 from app.pipeline.parser import parse_invoice
-from app.pipeline.reader import ReadError, page_count, read_document
+from app.pipeline.reader import OCR_DPI, ReadError, page_count, read_document
 from app.utils.money import inr
 from app.utils.textnorm import norm_invoice_number
 
@@ -227,7 +227,7 @@ class Runner:
                                    f"Digital PDF: {doc.char_count:,} characters, {len(doc.lines)} lines read exactly.")])
                     s.summary = f"Digital PDF · {doc.char_count:,} characters"
                 elif doc.method == "ocr":
-                    s.log("No text layer - this is a scanned image. Rendering at 300 DPI for OCR…")
+                    s.log(f"No text layer - this is a scanned image. Rendering at {OCR_DPI} DPI for OCR…")
                     s.log(f"Deskewed the page by {doc.deskew_angle:+.2f}° and ran {doc.ocr_engine}.")
                     conf = doc.ocr_confidence or 0
                     minc = ref.policy["ocr_min_confidence"]

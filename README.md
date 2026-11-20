@@ -37,7 +37,7 @@ flowchart LR
 | # | Stage | What it does | Why it matters |
 |---|---|---|---|
 | 1 | Receive | Validates the PDF, SHA-256 fingerprint | The exact same file can never be paid twice |
-| 2 | Read | Digital text layer read exactly; scans are rendered at 300 DPI, **deskewed**, OCR'd with Tesseract, with a confidence score | Real invoices arrive both ways |
+| 2 | Read | Digital text layer read exactly; scans are rendered at 300 DPI (200 on the free host), **deskewed**, OCR'd with Tesseract, with a confidence score | Real invoices arrive both ways |
 | 3 | Extract | Rule-based reader (label-anchored fields, column-aware tables, totals, GST, bank details, amount-in-words). An optional **Gemini AI reader** reads independently and the two are reconciled field by field | Every field shows *how* it was found, the text it came from, and a confidence |
 | 4 | Validate | Is it a tax invoice (not a proforma/quotation) in INR? Then qty × rate, Σ lines = subtotal, subtotal + GST = total, **total in figures = total in words**, GST computed on the right base, CGST+SGST vs IGST by supplier state, valid supplier GSTIN, our GSTIN on the invoice, dates | Catches vendor errors before they hit the books, and protects GST input credit |
 | 5 | Vendor | Vendor master by GSTIN (then fuzzy name), blocked vendors, GSTIN match, **bank details vs master**, contact details vs master | Payment-fraud control |

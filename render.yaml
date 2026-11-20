@@ -16,6 +16,9 @@ services:
       # Demo pacing so each stage is visible live in the UI (0 = full speed).
       - key: STAGE_DELAY_MS
         value: "650"
+      # The free plan has 0.1 CPU: 200 DPI OCR is ~2.4x faster than 300 with the same results on the samples.
+      - key: OCR_DPI
+        value: "200"
       # Protects "Reset demo data" on the public URL. Render generates it; find it under Environment.
       - key: ADMIN_TOKEN
         generateValue: true

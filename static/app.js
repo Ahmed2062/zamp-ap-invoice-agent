@@ -749,7 +749,7 @@ function renderAbout() {
   const c = state.config;
   const stagesHelp = {
     intake: "Accepts the PDF and fingerprints it (SHA-256) so the exact same file can never be paid twice.",
-    read: "Digital PDFs are read exactly. Scans are rendered at 300 DPI, straightened and OCR'd, with a confidence score.",
+    read: "Digital PDFs are read exactly. Scans are rendered at high resolution, straightened and OCR'd, with a confidence score.",
     extract: "A rule-based reader finds labelled fields and table columns. An optional AI reader reads independently; disagreements are settled by evidence.",
     validate: "Lines × rates, subtotal, GST maths and type (CGST/SGST vs IGST), total in words, our GSTIN, dates.",
     vendor: "Vendor master lookup by GSTIN; blocked vendors stopped; bank details on the invoice compared with verified master details.",
