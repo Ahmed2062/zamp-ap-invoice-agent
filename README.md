@@ -111,7 +111,7 @@ pip install -r requirements-dev.txt
 cp .env.example .env          # optional: add GEMINI_API_KEY
 uvicorn app.main:app --reload --port 8000
 # open http://localhost:8000
-pytest -q                      # 58 tests: extraction on every sample, every scenario's decision, API, AI merge (mocked), robustness
+pytest -q                      # 59 tests: extraction on every sample, every scenario's decision, API, AI merge (mocked), robustness
 ```
 
 Regenerate the reference data and sample invoices with `python scripts/generate_data.py`.

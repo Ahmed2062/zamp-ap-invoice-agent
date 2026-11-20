@@ -54,7 +54,8 @@ def test_scanned_invoice_without_po_infers_po(runner):
     assert r["read_method"] == "ocr"
     assert r["decision"] == "APPROVED", r["headline"]
     assert r["po_number"] == "4500001215" and r["po_inferred"] == 1
-    assert "after OCR repair" in json.dumps(r["result"]["checks"])
+    # Whether OCR needed a GSTIN repair depends on render resolution; the outcome must be the master GSTIN either way.
+    assert r["result"]["fields"]["vendor_gstin"] == "29BQRPA6634L1Z9"
 
 
 def test_split_po_overbilling_needs_buyer_review(runner):

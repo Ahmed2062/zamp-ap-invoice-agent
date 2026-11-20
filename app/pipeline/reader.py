@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import io
 import os
+import re
 import shutil
 import statistics
 import sys
@@ -147,6 +148,24 @@ class ReadError(Exception):
     pass
 
 
+_NUM_HEAD = re.compile(r"^[\d,]*\d[;:,]$")
+_NUM_TAIL = re.compile(r"^\d{2,3}(?:[.,]\d{1,2})?$")
+
+
+def _merge_split_numbers(words: list[Word]) -> list[Word]:
+    """OCR sometimes splits '3,217.50' into '3;' + '217.50'. Re-join tightly spaced numeric fragments."""
+    out: list[Word] = []
+    for w in words:
+        prev = out[-1] if out else None
+        if (prev is not None and _NUM_HEAD.match(prev.text) and _NUM_TAIL.match(w.text)
+                and w.x0 - prev.x1 < 0.9 * max(prev.height, w.height, 1.0)):
+            out[-1] = Word(text=prev.text[:-1] + "," + w.text, x0=prev.x0, x1=w.x1, top=min(prev.top, w.top),
+                           bottom=max(prev.bottom, w.bottom), conf=min(prev.conf or 0, w.conf or 0), size=None)
+        else:
+            out.append(w)
+    return out
+
+
 def tesseract_cmd() -> str | None:
     cmd = os.environ.get("TESSERACT_CMD") or shutil.which("tesseract")
     if not cmd:
@@ -274,7 +293,7 @@ def _ocr_pages(pdf_bytes: bytes) -> tuple[list[Line], int, float, float, float, 
         page_lines = []
         for ws in groups.values():
             ws.sort(key=lambda w: w.x0)
-            page_lines.append(Line(words=ws, page=pno + 1))
+            page_lines.append(Line(words=_merge_split_numbers(ws), page=pno + 1))
         page_lines.sort(key=lambda l: l.top)
         lines.extend(page_lines)
         offset += heights[pno]

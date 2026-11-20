@@ -145,6 +145,39 @@ def validate_invoice(ctx: Ctx) -> list[Check]:
                              Q_AP, "taxable value unclear", question="What is the taxable value of this invoice?"))
     subtotal = D(f["subtotal"]) if f.get("subtotal") is not None else None
     total = D(f["total"]) if f.get("total") is not None else None
+    words = f.get("amount_in_words_value")
+
+    # On a scan, an arithmetic mismatch is more likely an OCR misread than a vendor error. Correct a figure only
+    # when it is the single value consistent with the rate, taxable value, total and amount in words.
+    ocr = ctx.read_method == "ocr"
+    if ocr and subtotal is not None and taxes:
+        anchors = [v for v in (total, D(words) if words is not None else None) if v is not None]
+        for t in taxes:
+            if t.get("rate") is None:
+                continue
+            exp = q2(subtotal * D(t["rate"]) / 100)
+            if abs(exp - D(t["amount"])) <= tol:
+                continue
+            new_sum = subtotal + sum((exp if x is t else D(x["amount"])) for x in taxes)
+            if anchors and all(abs(new_sum - a) <= tol for a in anchors):
+                out.append(Check("ocr.tax_corrected", st, "Scanned figures consistent", "warn",
+                                 f"OCR read {t['type']} as {rs(t['amount'])}; corrected to {rs(exp)} - the only value consistent "
+                                 f"with the {t['rate']:g}% rate, the taxable value and the invoice total"
+                                 f"{' and amount in words' if words is not None else ''}."))
+                t["amount"] = float(exp)
+        tax_total = sum((D(t["amount"]) for t in taxes), Decimal("0"))
+        f["tax_total"] = float(tax_total)
+    if ocr and subtotal is not None and tax_total is not None and total is not None and words is not None:
+        calc = subtotal + tax_total
+        if abs(calc - total) > tol and abs(calc - D(words)) <= tol:
+            out.append(Check("ocr.total_corrected", st, "Scanned figures consistent", "warn",
+                             f"OCR read the total as {rs(total)}; corrected to {rs(calc)}, which both the amount in words "
+                             f"and taxable value + GST confirm."))
+            total = calc
+            f["total"] = float(calc)
+    sev = "review" if ocr else "return"
+    ocr_q = ("This is a scanned invoice - check the figure against the image. If the invoice itself is wrong, "
+             "return it to the vendor.") if ocr else None
 
     # Line arithmetic
     priced = [(i, it) for i, it in enumerate(items, 1)
@@ -159,7 +192,8 @@ def validate_invoice(ctx: Ctx) -> list[Check]:
                          "No itemised quantities/rates to check (bundled or service invoice)."))
     elif bad:
         out.append(Check("math.lines", st, "Line amounts = qty × rate", "fail", "Line arithmetic is wrong: " + "; ".join(bad),
-                         "return", Q_AP, "line amounts don't add up", vendor_fix="Correct the line amounts: " + "; ".join(bad)))
+                         sev, Q_AP, "line amounts don't add up", vendor_fix="Correct the line amounts: " + "; ".join(bad),
+                         question=ocr_q))
     else:
         out.append(Check("math.lines", st, "Line amounts = qty × rate", "pass",
                          f"All {len(priced)} line amounts equal quantity × rate."))
@@ -169,9 +203,10 @@ def validate_invoice(ctx: Ctx) -> list[Check]:
         s = sum((D(it["amount"]) for it in items), Decimal("0"))
         if abs(s - subtotal) > tol:
             out.append(Check("math.subtotal", st, "Lines add up to subtotal", "fail",
-                             f"Lines sum to {rs(s)} but the invoice subtotal is {rs(subtotal)}.", "return", Q_AP,
+                             f"Lines sum to {rs(s)} but the invoice subtotal is {rs(subtotal)}.", sev, Q_AP,
                              "subtotal doesn't match the lines",
-                             vendor_fix=f"Subtotal should be {rs(s)} (sum of lines), invoice shows {rs(subtotal)}."))
+                             vendor_fix=f"Subtotal should be {rs(s)} (sum of lines), invoice shows {rs(subtotal)}.",
+                             question=ocr_q))
         else:
             out.append(Check("math.subtotal", st, "Lines add up to subtotal", "pass", f"Lines sum to the subtotal {rs(subtotal)}."))
 
@@ -181,8 +216,8 @@ def validate_invoice(ctx: Ctx) -> list[Check]:
         if abs(exp - total) > tol:
             out.append(Check("math.total", st, "Subtotal + GST = total", "fail",
                              f"{rs(subtotal)} + GST {rs(tax_total)} = {rs(exp)}, but the invoice total is {rs(total)}.",
-                             "return", Q_AP, "total doesn't add up",
-                             vendor_fix=f"Invoice total should be {rs(exp)}; it shows {rs(total)}."))
+                             sev, Q_AP, "total doesn't add up",
+                             vendor_fix=f"Invoice total should be {rs(exp)}; it shows {rs(total)}.", question=ocr_q))
         else:
             out.append(Check("math.total", st, "Subtotal + GST = total", "pass",
                              f"{rs(subtotal)} + GST {rs(tax_total)} = {rs(total)}."))
@@ -190,13 +225,13 @@ def validate_invoice(ctx: Ctx) -> list[Check]:
         out.append(Check("math.total", st, "Subtotal + GST = total", "skip", "No invoice total available."))
 
     # Total in words
-    words = f.get("amount_in_words_value")
     if words is not None and total is not None:
         if abs(D(words) - total) > tol:
             out.append(Check("math.words", st, "Total in figures = total in words", "fail",
-                             f"Total in figures is {rs(total)} but in words it reads {rs(words)}.", "return", Q_AP,
+                             f"Total in figures is {rs(total)} but in words it reads {rs(words)}.", sev, Q_AP,
                              "amount in words contradicts the total",
-                             vendor_fix=f"Amount in words ({rs(words)}) does not match the total in figures ({rs(total)})."))
+                             vendor_fix=f"Amount in words ({rs(words)}) does not match the total in figures ({rs(total)}).",
+                             question=ocr_q))
         else:
             out.append(Check("math.words", st, "Total in figures = total in words", "pass",
                              f"'{f.get('amount_in_words')}' = {rs(total)}."))
@@ -219,8 +254,9 @@ def validate_invoice(ctx: Ctx) -> list[Check]:
                 wrong.append(f"{t['type']} @ {rate:g}% should be {rs(exp)} on taxable value {rs(subtotal)}, invoice charges "
                              f"{rs(t['amount'])} (computed on {rs(implied)})")
         if wrong:
-            out.append(Check("tax.amount", st, "GST computed on the taxable value", "fail", "; ".join(wrong), "return", Q_AP,
-                             "GST computed on the wrong base", vendor_fix="Recompute GST: " + "; ".join(wrong)))
+            out.append(Check("tax.amount", st, "GST computed on the taxable value", "fail", "; ".join(wrong), sev, Q_AP,
+                             "GST computed on the wrong base", vendor_fix="Recompute GST: " + "; ".join(wrong),
+                             question=ocr_q))
         else:
             out.append(Check("tax.amount", st, "GST computed on the taxable value", "pass",
                              "Each GST component equals rate × taxable value."))

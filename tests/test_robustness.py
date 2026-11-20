@@ -89,6 +89,14 @@ def test_concurrent_reviews_cannot_double_post(runner):
     assert len([e for e in runner.db.ledger_all() if e["run_id"] == rid]) == 1
 
 
+def test_ocr_split_numbers_are_rejoined():
+    from app.pipeline.reader import Word, _merge_split_numbers
+    ws = [Word("SGST", 0, 30, 0, 10), Word("3;", 200, 210, 0, 10), Word("217.50", 213, 250, 0, 10)]
+    assert [w.text for w in _merge_split_numbers(ws)] == ["SGST", "3,217.50"]
+    far = [Word("3;", 200, 210, 0, 10), Word("217.50", 300, 340, 0, 10)]
+    assert len(_merge_split_numbers(far)) == 2
+
+
 def test_digital_gstin_typos_are_flagged_not_repaired():
     good = G.make_gstin("29", "AACCT4178K")
     typo = good[:-1] + ("A" if good[-1] != "A" else "B")
